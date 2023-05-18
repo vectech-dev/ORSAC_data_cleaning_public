@@ -1,0 +1,10 @@
+# Pydantic
+*.egg-info/*
+# Environments
+
+.env
+data/*
+experiments/*
+*.pyc
+*..pyc
+configs/*
