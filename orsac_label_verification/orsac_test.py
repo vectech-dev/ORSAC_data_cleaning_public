@@ -17,8 +17,8 @@ from natsort import natsorted
 from sklearn.metrics import confusion_matrix
 from tqdm import tqdm
 
-from ransac_label_verification.train_config import ExperimentationConfig
-from ransac_label_verification.utils.logging import (
+from orsac_label_verification.train_config import ExperimentationConfig
+from orsac_label_verification.utils.logging import (
     current_iter_path,
     experiment_path,
     get_config,
@@ -26,16 +26,15 @@ from ransac_label_verification.utils.logging import (
     record_top_x_pred,
     sub_directory_path,
 )
-from ransac_label_verification.utils.utils import get_classes, str_to_list
+from orsac_label_verification.utils.utils import get_classes, str_to_list
 
 load_dotenv()
 
 
-def ransac_exp_path(config):
-    return os.path.join("Ransac", config.exp_name)
 
 
-class RansacResults:
+
+class OrsacResults:
     def __init__(self, config, threshold, test_mode=True):
         self.config = config
         self.directory = experiment_path(config)
@@ -45,7 +44,6 @@ class RansacResults:
         self.results = pd.read_csv(res_path)
         # maybe change the get_classes method to be uniform throughout code database. Ie, only define it once and reuse it.
         self.class_map, self.rev_class_map = get_classes(res_path)
-        # the figures should get their own folder, this needs changing the ransac_init (or in init results whatver)
         self.figure_path = os.path.join(self.directory, "figures")
         sampled = self.results[self.results["num_sampled"] > 0].copy()
 
@@ -127,7 +125,6 @@ class RansacResults:
         plt.close("all")
         return fig
 
-    # Think about deleting/placing somewhere else (logging) since this is created automatically in ransac
     def top_x_all(self):
         self.top_pred_df = self.results.copy()
         classes = [i for i in self.results.y.unique() if i != -1]
@@ -263,33 +260,34 @@ class RansacResults:
                     0
                 ]
         return None
+# Below is code dealing with graphing accuracies over all iterations.
+#  Worthwhile making a new one that tracks val too
 
-    # functionality must change, in ransac function create a file that tracks metrics from run to run, suchs as top val accuracy, test accuracy, idk.
-    def get_iter_acc(self, ipath):
-        with open(ipath) as f:
-            lines = f.readlines()
-            return float(lines[0].split(" ")[2])
+    # def get_iter_acc(self, ipath):
+    #     with open(ipath) as f:
+    #         lines = f.readlines()
+    #         return float(lines[0].split(" ")[2])
 
-    # This could be kept, the only thing is you have to change where it looks for accuracies.
-    def graph_accuracies(self):
-        accs = []
-        for sub in [i for i in natsorted(os.listdir(self.directory)) if "iter" in i]:
-            path = os.path.join(self.directory, sub, "preds/results.txt")
-            if os.path.exists(path):
-                accs.append(self.get_iter_acc(path))
-        x = [i for i in range(len(accs))]
-        y = accs
+    # # This could be kept, the only thing is you have to change where it looks for accuracies.
+    # def graph_accuracies(self):
+    #     accs = []
+    #     for sub in [i for i in natsorted(os.listdir(self.directory)) if "iter" in i]:
+    #         path = os.path.join(self.directory, sub, "preds/results.txt")
+    #         if os.path.exists(path):
+    #             accs.append(self.get_iter_acc(path))
+    #     x = [i for i in range(len(accs))]
+    #     y = accs
 
-        plt.title("Model Accuracy by Iteration")
-        fig = plt.figure()
-        plt.scatter(x, y)
-        plt.xlabel("Iteration Number")
-        plt.ylabel("Percent accuracy")
+    #     plt.title("Model Accuracy by Iteration")
+    #     fig = plt.figure()
+    #     plt.scatter(x, y)
+    #     plt.xlabel("Iteration Number")
+    #     plt.ylabel("Percent accuracy")
 
-        plt.close("all")
-        return fig, accs
+    #     plt.close("all")
+    #     return fig, accs
 
-    # should work the smae way
+
     def get_caught_percents(self):
         mislabeld = self.sampled[self.sampled["mislabeled"] == True]
         p_df = self.sampled[self.sampled["mislab_pred"] == True]
@@ -397,13 +395,6 @@ class RansacResults:
         return fig
 
 
-# This would be excellent to write, makes it easier to run experiments on multiple machines.
-def merge_result_df(configs):
-    # given a list of config paths configs, merge the results file associated with teach ransac experiment
-    # together into a new sheet at location path
-
-    results_list = []
-
 
 # This works well for small percentages.
 def iterate_test_sheet(path, percent_missed, i):
@@ -481,16 +472,16 @@ def test_model(settings_json):
     print(settings_json)
     config = ExperimentationConfig.parse_obj(settings_json)
     start = time.time()
-    ransac_results = RansacResults(config, threshold=1.0, test_mode=True)
-    ransac_results.save_figures()
-    ransac_results.save_results_df()
-    ransac_results.save_top_x_figs()
+    orsac_results = OrsacResults(config, threshold=1.0, test_mode=True)
+    orsac_results.save_figures()
+    orsac_results.save_results_df()
+    orsac_results.save_top_x_figs()
 
     end = time.time()
     print(f"Time elapsed:{start-end}")
 
 
-def ransac_test(experiment_dir: str):
+def orsac_test(experiment_dir: str):
     with open(experiment_dir + "/config.json", "r") as json_file:
         settings_json = json.load(json_file)
         settings_json["mode"] = "test"  # Change the mode to "test"

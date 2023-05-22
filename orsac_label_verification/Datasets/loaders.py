@@ -5,12 +5,12 @@ from fastai.data.load import DataLoader as FastDataLoader
 from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 
-from ransac_label_verification.utils.logging import (
+from orsac_label_verification.utils.logging import (
     current_iter_path,
     get_data_csv,
     get_img_abspath,
 )
-from ransac_label_verification.utils.utils import (
+from orsac_label_verification.utils.utils import (
     alb_transform_test,
     alb_transform_train,
 )

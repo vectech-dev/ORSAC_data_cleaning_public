@@ -1,4 +1,4 @@
-# ransac-label-verification
+# orsac_label_verification
 
 Algorithm inspired by the ransac algorithm that iteratively cleans datasets for classification problems. 
 This repository is created for the paper "Ransac for Deep Learning Classification" (placeholder)
@@ -16,25 +16,25 @@ $ pip install -e .
 ### Train
 
 ```sh
-$ python -m ransac_label_verification --config configs/config.json
+$ python -m orsac_label_verification --config configs/config.json
 ```
 
 ### Test
 For multiple experiments, run: 
 ```sh
-python -m ransac_label_verification --mode test --exp-dir experiments/example_exp
+python -m orsac_label_verification --mode test --exp-dir experiments/example_exp
 ```
 
 ### Evaluation
 
 ```sh
-python -m ransac_label_verification --mode eval --exp-dir experiments/example_exp
+python -m orsac_label_verification --mode eval --exp-dir experiments/example_exp
 
 ```
 
 ### Settings 
 For this repository we used `cuda =11.7`. 
-Create `.env` file in `ransac_label_verification`
+Create `.env` file in `orsac_label_verification`
 ```sh
 IMAGE_BASE_DIRECTORY="/example/example"
 ```
@@ -60,7 +60,7 @@ We also used the CIFAR100 dataset
 ### Script
 
 ```sh
-usage: ransac_label_verification [-h] [--mode {eval,test,train}] [--config CONFIG] [--exp-dir EXP_DIR] [--batch-size BATCH_SIZE]
+usage: orsac_label_verification [-h] [--mode {eval,test,train}] [--config CONFIG] [--exp-dir EXP_DIR] [--batch-size BATCH_SIZE]
 
 optional arguments:
   -h, --help            show this help message and exit

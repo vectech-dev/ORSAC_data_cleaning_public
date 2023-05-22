@@ -9,7 +9,7 @@ from fastcore.basics import store_attr
 from fastcore.nb_imports import *
 from torch.utils.data import BatchSampler, WeightedRandomSampler
 
-from ransac_label_verification.utils.logging import save_metric
+from orsac_label_verification.utils.logging import save_metric
 
 
 class SaveBestModel(TrackerCallback):

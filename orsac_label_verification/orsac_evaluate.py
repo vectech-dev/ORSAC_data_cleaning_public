@@ -7,11 +7,11 @@ import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
-from ransac_label_verification.ransac_test import RansacResults
-from ransac_label_verification.test import test
-from ransac_label_verification.train import train_eval
-from ransac_label_verification.train_config import ExperimentationConfig
-from ransac_label_verification.utils.logging import (
+from orsac_label_verification.orsac_test import OrsacResults
+from orsac_label_verification.test import test
+from orsac_label_verification.train import train_eval
+from orsac_label_verification.train_config import ExperimentationConfig
+from orsac_label_verification.utils.logging import (
     con_mat_iter,
     experiment_path,
     get_data_csv,
@@ -19,7 +19,7 @@ from ransac_label_verification.utils.logging import (
     init_metrics_df,
     setup_directories,
 )
-from ransac_label_verification.utils.utils import get_classes, split_generator
+from orsac_label_verification.utils.utils import get_classes, split_generator
 
 
 def save_cleaned_set(config):
@@ -33,7 +33,7 @@ def save_cleaned_set(config):
         if os.path.exists(fig_path):
             flagged_df = pd.read_csv(os.path.join(fig_path, "flagged_specimens.csv"))
         else:
-            results = RansacResults(config, 1, True)
+            results = OrsacResults(config, 1, True)
             flagged_df = results.save_results_df(verbose=True)
         cleaned_df = data_df.set_index("Specimen_Id")
         cleaned_df = cleaned_df.drop(flagged_df.Specimen_Id.unique())
@@ -97,7 +97,7 @@ def evaluate(config):
     return acc
 
 
-def ransac_evaluate(experiment_dir: str):
+def orsac_evaluate(experiment_dir: str):
     with open(experiment_dir + "/config.json", "r") as json_file:
         settings_json = json.load(json_file)
         settings_json["mode"] = "eval"  # Change the mode to "test"

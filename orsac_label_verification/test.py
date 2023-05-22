@@ -6,10 +6,10 @@ import torch
 import torch.backends.cudnn as cudnn
 from dotenv import load_dotenv
 
-from ransac_label_verification.Datasets.loaders import get_test_loader
-from ransac_label_verification.models.loaders import load_model
-from ransac_label_verification.train_config import ExperimentationConfig
-from ransac_label_verification.utils.logging import get_config
+from orsac_label_verification.Datasets.loaders import get_test_loader
+from orsac_label_verification.models.loaders import load_model
+from orsac_label_verification.train_config import ExperimentationConfig
+from orsac_label_verification.utils.logging import get_config
 
 
 def model_size(model):

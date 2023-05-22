@@ -2,10 +2,10 @@
 import abc
 import json
 
-from ransac_label_verification.ransac_evaluate import ransac_evaluate
-from ransac_label_verification.ransac_test import ransac_test
-from ransac_label_verification.train import train
-from ransac_label_verification.train_config import (  # , PathsConfig
+from orsac_label_verification.orsac_evaluate import orsac_evaluate
+from orsac_label_verification.orsac_test import orsac_test
+from orsac_label_verification.train import train
+from orsac_label_verification.train_config import (  # , PathsConfig
     ExperimentationConfig,
 )
 
@@ -51,7 +51,7 @@ class TestingExecutor(Executor):
         assert self.config is None, "No configuration needed for testing"
 
     def execute(self):
-        ransac_test(self.args.exp_dir)
+        orsac_test(self.args.exp_dir)
 
 
 class EvaluationExecutor(Executor):
@@ -60,7 +60,7 @@ class EvaluationExecutor(Executor):
         assert self.config is None, "No configuration needed for evaluation"
 
     def execute(self):
-        ransac_evaluate(self.args.exp_dir)
+        orsac_evaluate(self.args.exp_dir)
 
 
 EXECUTORS = {
@@ -77,7 +77,7 @@ def get_executor(mode: str) -> Executor:
 def run(args=None):
     from argparse import ArgumentParser
 
-    parser = ArgumentParser("ransac_label_verification")
+    parser = ArgumentParser("orsac_label_verification")
     parser.add_argument(
         "--mode",
         type=str,

@@ -12,11 +12,11 @@ from fastai.data.core import DataLoaders
 from fastai.learner import Learner
 from fastai.optimizer import ranger
 
-from ransac_label_verification.Datasets.loaders import get_fastai_dataloaders
-from ransac_label_verification.test import test
-from ransac_label_verification.train_config import ExperimentationConfig
-from ransac_label_verification.utils.callbacks import SaveBestModel
-from ransac_label_verification.utils.logging import (
+from orsac_label_verification.Datasets.loaders import get_fastai_dataloaders
+from orsac_label_verification.test import test
+from orsac_label_verification.train_config import ExperimentationConfig
+from orsac_label_verification.utils.callbacks import SaveBestModel
+from orsac_label_verification.utils.logging import (
     con_mat_iter,
     create_results_df,
     create_top_preds_df,
@@ -32,8 +32,8 @@ from ransac_label_verification.utils.logging import (
     setup_directories,
     shuffle_data,
 )
-from ransac_label_verification.utils.metrics import accuracy, macro_f1
-from ransac_label_verification.utils.utils import SimpleLogger
+from orsac_label_verification.utils.metrics import accuracy, macro_f1
+from orsac_label_verification.utils.utils import SimpleLogger
 
 
 def train_(config, model):
@@ -73,7 +73,7 @@ def train_(config, model):
     return learn.model
 
 
-def ransac_one_iter(config, model, i):
+def orsac_one_iter(config, model, i):
     print(f"Running iter_{i}")
     iter_data(config, i)
     train_(config, model)
@@ -85,13 +85,13 @@ def ransac_one_iter(config, model, i):
     save_current_iter(config, i)
 
 
-def ransac_all(config, model):
+def orsac_all(config, model):
     shuffle_data(config)
     for i in range(config.n_iterations):
-        ransac_one_iter(config, model, i)
+        orsac_one_iter(config, model, i)
 
 
-def init_ransac(config):
+def init_orsac(config):
     setup_directories(config)
     init_data_df(config)
     init_metrics_df(config)
@@ -102,8 +102,8 @@ def init_ransac(config):
 
 
 def train_model(config, model):
-    init_ransac(config)
-    ransac_all(config, model)
+    init_orsac(config)
+    orsac_all(config, model)
 
 
 def train(config: ExperimentationConfig):

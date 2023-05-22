@@ -8,9 +8,9 @@ from torch.nn import CrossEntropyLoss, L1Loss
 from torch.optim import SGD, Adam, AdamW, RMSprop
 from torch.utils.data import Dataset
 
-from ransac_label_verification.Datasets.datasets import MosDataset
-from ransac_label_verification.models.models import efficientnet_mod, xception_mod
-from ransac_label_verification.utils.losses import MosLoss
+from orsac_label_verification.Datasets.datasets import MosDataset
+from orsac_label_verification.models.models import efficientnet_mod, xception_mod
+from orsac_label_verification.utils.losses import MosLoss
 
 
 # todo but not high priority
@@ -45,7 +45,7 @@ class ExperimentationConfig(BaseModel):
         default={}, description="the names of the classes, gotten automatically"
     )
     n_iterations: Optional[int] = Field(
-        default=35, description="the number of iterations to run Ransac for"
+        default=35, description="the number of iterations to run ORSAC for"
     )
     weight_decay: Optional[float] = Field(default=1e-2, description="weight decay rate")
     lr: Optional[float] = Field(default=1e-3, description="learning rate")

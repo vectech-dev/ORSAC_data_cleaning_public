@@ -13,7 +13,7 @@ from skimage import transform
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
-from ransac_label_verification.utils.logging import get_img_abspath
+from orsac_label_verification.utils.logging import get_img_abspath
 
 
 def make_square(img):

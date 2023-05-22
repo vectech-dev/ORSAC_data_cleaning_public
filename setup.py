@@ -7,12 +7,12 @@ from setuptools import find_packages, setup
 __version__ = "0.0.1"
 
 setup(
-    name="ransac_label_verification",
+    name="orsac_label_verification",
     version=__version__,
     description="Iterative Label Verification Model",
     author="Thomas Jenkins",
     author_email="thomas@vectech.io",
-    packages=["ransac_label_verification"],
+    packages=["orsac_label_verification"],
     include_package_data=True,
     install_requires=[
         "torchvision",
@@ -31,6 +31,7 @@ setup(
         "python-dotenv",
         "torchsampler",
         "IPython",
+        "seaborn"
     ],
     python_requires=">=3.9",
 )

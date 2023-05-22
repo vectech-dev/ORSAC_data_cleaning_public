@@ -1,6 +1,6 @@
 import torch
 
-from ransac_label_verification.utils.logging import model_weights_path
+from orsac_label_verification.utils.logging import model_weights_path
 
 
 def load_model(config, model, test=True):

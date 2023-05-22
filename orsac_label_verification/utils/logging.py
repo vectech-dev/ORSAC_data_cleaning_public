@@ -7,7 +7,7 @@ import torch
 from dotenv import load_dotenv
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix, f1_score
 
-from ransac_label_verification.utils.utils import split_generator
+from orsac_label_verification.utils.utils import split_generator
 
 load_dotenv()
 
@@ -77,14 +77,14 @@ def model_weights_path(config):
 
 
 def create_results_df(config):
-    ransac_res_path = os.path.join(experiment_path(config), "results.csv")
+    orsac_res_path = os.path.join(experiment_path(config), "results.csv")
     res_df = pd.read_csv(get_data_csv(config.data_csv_path))
     res_df["num_sampled"] = 0
     res_df["num_missed"] = 0
     for y in range(max(res_df.y.unique()) + 1):
         for j in range(config.top_x):
             res_df[f"{str(y)}_{j+1}"] = 0
-    res_df.to_csv(ransac_res_path, index=False)
+    res_df.to_csv(orsac_res_path, index=False)
 
 
 def init_data_df(config):
