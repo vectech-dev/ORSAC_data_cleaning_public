@@ -3,7 +3,7 @@
 Algorithm inspired by the ransac algorithm that iteratively cleans datasets for classification problems. 
 This repository is created for the paper "Ransac for Deep Learning Classification" (placeholder)
 
-## RUN
+## Setup
 
 Uses [`pydantic`](https://docs.pydantic.dev/) to configure/orchestrate settings for training. Install requirements from [`requirements.txt`](./requirements.txt). And `pip` install package:
 
