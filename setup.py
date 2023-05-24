@@ -10,8 +10,8 @@ setup(
     name="orsac_label_verification",
     version=__version__,
     description="Iterative Label Verification Model",
-    author="Thomas Jenkins",
-    author_email="thomas@vectech.io",
+    author="ANON",
+    author_email="anon",
     packages=["orsac_label_verification"],
     include_package_data=True,
     install_requires=[

@@ -16,16 +16,16 @@ from orsac_label_verification.utils.utils import (
 )
 
 
-def get_test_loader(config, split="Test", test_df=None):
+def get_test_loader(config, mode,split="Test", test_df=None):
     """sets up the torch data loaders for testing"""
-    if test_df is None and config.test_data_csv_path is None:
+    if test_df is None and mode!='Eval':
         df = pd.read_csv(os.path.join(current_iter_path(config), "data.csv"))
 
         df = df[
             df.Id.apply(lambda x: os.path.exists(get_img_abspath(x, config)))
         ].reset_index(drop=True)
         test_df = df[df.Split == split].reset_index(drop=True)
-    elif config.test_data_csv_path is not None:
+    elif config.test_data_csv_path is not None and mode =='Eval':
         df = pd.read_csv(get_data_csv(config.test_data_csv_path))
         df = df[
             df.Id.apply(lambda x: os.path.exists(get_img_abspath(x, config)))

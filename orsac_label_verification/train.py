@@ -135,4 +135,4 @@ def train_eval(config: ExperimentationConfig):
     device = config.device
     model = model.to(device)
     model.train()
-    train_model(config, model)
+    train_(config, model)

@@ -64,7 +64,8 @@ def init_eval(config):
     setup_directories(config)
     init_data_df(config)
     init_metrics_df(config)
-
+    with open(os.path.join(experiment_path(config), "config.json"), "w") as outfile:
+        json.dump(config.dict(exclude_none=True), outfile)
 
 def _evaluation(settings_json):
     class_dict, _ = get_classes(get_data_csv(settings_json["data_csv_path"]))
@@ -92,7 +93,7 @@ def _evaluation(settings_json):
 def evaluate(config):
     init_eval(config)
     train_eval(config)
-    _, preds, labels, acc = test(config)
+    _, preds, labels, acc = test(config,mode='Eval')
     con_mat_iter(config, labels, preds, 0)
     return acc
 

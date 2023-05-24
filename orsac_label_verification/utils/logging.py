@@ -90,6 +90,7 @@ def create_results_df(config):
 def init_data_df(config):
     data_path = os.path.join(current_iter_path(config), "data.csv")
     data_df = pd.read_csv(get_data_csv(config.data_csv_path))
+    data_df=split_generator(data_df,[.82,.18,0],sort=None)
     data_df.to_csv(data_path, index=False)
 
 

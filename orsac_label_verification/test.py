@@ -27,15 +27,14 @@ def model_size(model):
 load_dotenv()
 
 
-def test(config, val_mode=False):
+def test(config, val_mode=False,mode='Test'):
     Model = config.get_model()
     model = Model(**config.model_kwargs)
     trained_model = load_model(config, model)
 
-    if not val_mode:
-        test_loader = get_test_loader(config)
-    else:
-        test_loader = get_test_loader(config, split="Valid")
+    
+    test_loader = get_test_loader(config,mode=mode)
+   
     prob_i = 0
     running_corrects = 0
     all_probs = torch.Tensor(len(test_loader.dataset), config.num_classes)

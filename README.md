@@ -1,7 +1,7 @@
 # orsac_label_verification
 
 Algorithm inspired by the ransac algorithm that iteratively cleans datasets for classification problems. 
-This repository is created for the paper "Ransac for Deep Learning Classification" (placeholder)
+This repository is created for the paper "An Ordered Sample Consensus (ORSAC) Method for Data Cleaning Inspired by RANSAC: Identifying Probable Mislabeled Data" 
 
 ## Setup
 
@@ -26,7 +26,7 @@ python -m orsac_label_verification --mode test --exp-dir experiments/example_exp
 ```
 
 ### Evaluation
-
+Make sure to add the "test_data_csv" path to the config file if you intend to evaluate the model with and without flagged sample removal. 
 ```sh
 python -m orsac_label_verification --mode eval --exp-dir experiments/example_exp
 
@@ -55,7 +55,7 @@ Column 3: This column represents ...
 ```
 ### Dataset
 We used the John Hopkins University mosquito dataset.
-We also used the CIFAR100 dataset 
+We also used the CIFAR-100 and CIFAR-10 dataset 
 
 ### Script
 
