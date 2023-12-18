@@ -121,8 +121,12 @@ def init_metrics_df(config):
 
 def shuffle_data(config):
     df = pd.read_csv(os.path.join(current_iter_path(config), "data.csv"))
-    new_df = split_generator(df, constraint="Species_Name", sort=None)
-    new_df.to_csv(os.path.join(current_iter_path(config), "data.csv"), index=False)
+    #UNTESTED, CHECK. 
+    if 'Split' not in df.columns:
+        new_df = split_generator(df, constraint="Species_Name", sort=None)
+        new_df.to_csv(os.path.join(current_iter_path(config), "data.csv"), index=False)
+    else:
+        pass
 
 
 def iter_data(config, i):

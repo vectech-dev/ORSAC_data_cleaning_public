@@ -81,11 +81,15 @@ def orsac_one_iter(config, model, i):
     con_mat_iter(config, labels, preds, i)
     save_test_output(config, preds, probs, acc)
     log_results(config)
-    record_top_x_pred(config)
+
+    # Skip this, consider altogether removing top_x 
+    # record_top_x_pred(config)
     save_current_iter(config, i)
 
 
 def orsac_all(config, model):
+    #Another place where time is wasted. Instead, in orsac init have a split column added. OR, just call this shuffle data function if there is not a split column.
+
     shuffle_data(config)
     for i in range(config.n_iterations):
         orsac_one_iter(config, model, i)
@@ -96,7 +100,8 @@ def init_orsac(config):
     init_data_df(config)
     init_metrics_df(config)
     create_results_df(config)
-    create_top_preds_df(config)
+    # consider removing to save memory. 
+    # create_top_preds_df(config)
     with open(os.path.join(experiment_path(config), "config.json"), "w") as outfile:
         json.dump(config.dict(exclude_none=True), outfile)
 

@@ -124,7 +124,8 @@ class OrsacResults:
         fig.text(0.05, 0.6, f"Specimens Tested:{str(num_tested)}")
         plt.close("all")
         return fig
-
+#Currently this is unused, so check back about whether you need it or not. Gut says no, not a useful figure to generate. 
+#It also eats up  a lot of memory. Look for ways to reduce memory usage. 
     def top_x_all(self):
         self.top_pred_df = self.results.copy()
         classes = [i for i in self.results.y.unique() if i != -1]
@@ -169,7 +170,7 @@ class OrsacResults:
                         if pred_dist == None:
                             continue
                         samples_pdf.savefig(pred_dist, bbox_inches="tight")
-
+#consider removing top_x_pred functionality for this repo, as it is clunky and unnecessary. 
     def get_top_x_pred_fig(self, sample, view):
         # top_pred_df=pd.read_csv(os.path.join(experiment_path(self.config),'results.csv'))
         top_pred_df = self.sampled
@@ -231,35 +232,35 @@ class OrsacResults:
         plt.legend(fontsize=17)
         plt.close(fig)
         return fig
+#The below functionis unused REMOVE
+    # def record_top_x_pred(self, path, top_x=3):
+    #     df = pd.read_csv(path)
 
-    def record_top_x_pred(self, path, top_x=3):
-        df = pd.read_csv(path)
+    #     for image in df.Id.unique():
+    #         probs = (
+    #             df.loc[
+    #                 df.Id == image,
+    #                 [str(i) for i in range(max(self.results["y"].unique()) + 1)],
+    #             ]
+    #             .values.flatten()
+    #             .tolist()
+    #         )
+    #         probs = np.array(probs)
 
-        for image in df.Id.unique():
-            probs = (
-                df.loc[
-                    df.Id == image,
-                    [str(i) for i in range(max(self.results["y"].unique()) + 1)],
-                ]
-                .values.flatten()
-                .tolist()
-            )
-            probs = np.array(probs)
+    #         top_k = -1 * top_x
+    #         top = np.argsort(probs)[top_k:]
+    #         top = np.flip(top)
 
-            top_k = -1 * top_x
-            top = np.argsort(probs)[top_k:]
-            top = np.flip(top)
+    #         image = image.replace("/opt/ImageBase/mosID-production/", "")
 
-            image = image.replace("/opt/ImageBase/mosID-production/", "")
-
-            for i, j in enumerate(top):
-                self.top_pred_df.loc[self.top_pred_df.Id == image, str(j)].values[0][
-                    i
-                ] += 1
-                row = self.top_pred_df.loc[self.top_pred_df.Id == image, str(j)].values[
-                    0
-                ]
-        return None
+    #         for i, j in enumerate(top):
+    #             self.top_pred_df.loc[self.top_pred_df.Id == image, str(j)].values[0][
+    #                 i
+    #             ] += 1
+    #             row = self.top_pred_df.loc[self.top_pred_df.Id == image, str(j)].values[
+    #                 0
+    #             ]
+    #     return None
 # Below is code dealing with graphing accuracies over all iterations.
 #  Worthwhile making a new one that tracks val too
 
@@ -475,7 +476,8 @@ def test_model(settings_json):
     orsac_results = OrsacResults(config, threshold=1.0, test_mode=True)
     orsac_results.save_figures()
     orsac_results.save_results_df()
-    orsac_results.save_top_x_figs()
+#Skip top_x for now, consider removing. 
+    # orsac_results.save_top_x_figs()
 
     end = time.time()
     print(f"Time elapsed:{start-end}")
