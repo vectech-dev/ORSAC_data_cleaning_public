@@ -23,7 +23,6 @@ from orsac_label_verification.utils.logging import (
     experiment_path,
     get_config,
     get_data_csv,
-    record_top_x_pred,
     sub_directory_path,
 )
 from orsac_label_verification.utils.utils import get_classes, str_to_list
@@ -126,22 +125,7 @@ class OrsacResults:
         return fig
 #Currently this is unused, so check back about whether you need it or not. Gut says no, not a useful figure to generate. 
 #It also eats up  a lot of memory. Look for ways to reduce memory usage. 
-    def top_x_all(self):
-        self.top_pred_df = self.results.copy()
-        classes = [i for i in self.results.y.unique() if i != -1]
-        for i in classes:
-            self.top_pred_df[str(i)] = [
-                [0] * self.config.top_x for i in range(len(self.top_pred_df))
-            ]
-        # Here is where the mechanics have changed. If problems when running check here.
-
-        for path in os.list_dir(sub_directory_path(self.config, "Probs")):
-            record_top_x_pred(self.config, probs_path=path)
-
-        self.top_pred_df.to_csv(
-            os.path.join(experiment_path(self.config), "top_preds.csv"), index=False
-        )
-
+    
     def str_to_list(self, string):
         string = string.replace("[", "")
         string = string.replace("]", "")
@@ -150,117 +134,9 @@ class OrsacResults:
         return string
 
     # needs editing to work for non front/back view.
-    def save_top_x_figs(self):
-        with PdfPages(
-            os.path.join(self.figure_path, f"All top{self.config.top_x} preds.pdf")
-        ) as samples_pdf:
-            samples_pdf.savefig(self.title_slide)
-            for y in tqdm(range(max(self.results["y"].unique()) + 1)):
-                sub_df = self.sampled[self.sampled.y == y]
-                for sample in sub_df.loc[
-                    sub_df["mislab_pred"] == True, "Specimen_Id"
-                ].unique():
-                    for view in sub_df.View.unique():
-                        if (
-                            view
-                            not in sub_df[sub_df.Specimen_Id == sample].View.unique()
-                        ):
-                            continue
-                        pred_dist = self.get_top_x_pred_fig(sample, view)
-                        if pred_dist == None:
-                            continue
-                        samples_pdf.savefig(pred_dist, bbox_inches="tight")
+ 
 #consider removing top_x_pred functionality for this repo, as it is clunky and unnecessary. 
-    def get_top_x_pred_fig(self, sample, view):
-        # top_pred_df=pd.read_csv(os.path.join(experiment_path(self.config),'results.csv'))
-        top_pred_df = self.sampled
-        sample_rows = top_pred_df.loc[top_pred_df["Specimen_Id"] == sample]
-        row = sample_rows[sample_rows.View == view]
-
-        x_axis = []
-        xs = np.arange(max(self.results["y"].unique()) + 1)
-        xs = xs * 1.7
-        xs_bar = xs - 0.5
-        y_axes = [[] for i in range(self.config.top_x)]
-
-        if self.test_mode:
-            spec_true = self.class_map[sample_rows["y_true"].unique()[0]]
-        spec_lab = self.class_map[sample_rows["y"].unique()[0]]
-
-        for i in range(max(self.results["y"].unique()) + 1):
-            x_axis.append(self.class_map[i])
-
-            for j, ax in enumerate(y_axes):
-                ax.append(row[f"{str(i)}_{j+1}"].values[0])
-
-        fig = plt.figure(figsize=(20, 5))
-        plt.title(f"Specimen {sample}{view} Prediction Counts")
-        plt.xlabel("Species")
-        plt.ylabel("Prediction Count")
-        plt.figtext(0.2, 1.0, f"labeled species : {spec_lab}")
-        if self.test_mode:
-            plt.figtext(0.2, 0.9, f"True Species :{spec_true}")
-
-        if row["mislab_pred"].values[0] == True:
-            plt.figtext(0.2, 0.8, "Flagged View")
-        bar_list = []
-        width = 0.30
-        hlist = ["", "", "", "", ""]
-        clist = ["red", "blue", "black", "gray", "white"]
-        for i, y_axis in enumerate(y_axes):
-            bar_list.append(
-                plt.bar(
-                    xs_bar + width * i,
-                    y_axis,
-                    width,
-                    align="center",
-                    color=clist[i],
-                    hatch=hlist[i],
-                    edgecolor="black",
-                    fill=True,
-                    label=f"Pred #{i+1} Count",
-                )
-            )
-            # bar_list.append(plt.barh(xs_bar+width*i,y_axis,width,align='edge',color=clist[i],hatch=hlist[i],edgecolor='black',fill=True,label=f'Pred #{i+1} Count'))
-        for j, i in enumerate(xs_bar):
-            # plt.axhline(i+width*5+.05,color='black',linestyle='dashed')
-            if j == 0:
-                plt.axvline(i - 0.15, color="black", linestyle="dashed")
-            plt.axvline(i + width * 5 - 0.01, color="black", linestyle="dashed")
-
-        plt.xticks(xs, x_axis, rotation="vertical")
-        plt.legend(fontsize=17)
-        plt.close(fig)
-        return fig
-#The below functionis unused REMOVE
-    # def record_top_x_pred(self, path, top_x=3):
-    #     df = pd.read_csv(path)
-
-    #     for image in df.Id.unique():
-    #         probs = (
-    #             df.loc[
-    #                 df.Id == image,
-    #                 [str(i) for i in range(max(self.results["y"].unique()) + 1)],
-    #             ]
-    #             .values.flatten()
-    #             .tolist()
-    #         )
-    #         probs = np.array(probs)
-
-    #         top_k = -1 * top_x
-    #         top = np.argsort(probs)[top_k:]
-    #         top = np.flip(top)
-
-    #         image = image.replace("/opt/ImageBase/mosID-production/", "")
-
-    #         for i, j in enumerate(top):
-    #             self.top_pred_df.loc[self.top_pred_df.Id == image, str(j)].values[0][
-    #                 i
-    #             ] += 1
-    #             row = self.top_pred_df.loc[self.top_pred_df.Id == image, str(j)].values[
-    #                 0
-    #             ]
-    #     return None
+  
 # Below is code dealing with graphing accuracies over all iterations.
 #  Worthwhile making a new one that tracks val too
 
@@ -476,8 +352,7 @@ def test_model(settings_json):
     orsac_results = OrsacResults(config, threshold=1.0, test_mode=True)
     orsac_results.save_figures()
     orsac_results.save_results_df()
-#Skip top_x for now, consider removing. 
-    # orsac_results.save_top_x_figs()
+
 
     end = time.time()
     print(f"Time elapsed:{start-end}")

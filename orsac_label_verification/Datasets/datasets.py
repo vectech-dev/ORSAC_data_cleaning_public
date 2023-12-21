@@ -95,9 +95,7 @@ class MosDataset(Dataset):
         self.images_df = self.images_df[
             self.images_df.Id.apply(os.path.exists)
         ].reset_index(drop=True)
-        print("HERE")
-        print(len(self.images_df))
-        print("HERE")
+
         counts = self.images_df["Split"].value_counts()
         print("Existing images:\n{}".format(counts))
 

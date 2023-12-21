@@ -26,7 +26,6 @@ from orsac_label_verification.utils.logging import (
     iter_data,
     log_results,
     models_directory,
-    record_top_x_pred,
     save_current_iter,
     save_test_output,
     setup_directories,

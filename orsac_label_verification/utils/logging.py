@@ -189,36 +189,7 @@ def log_results(config):
     df.to_csv(path, index=False)
 
 
-def record_top_x_pred(config, probs_path=None):
-    top_x = config.top_x
-    if probs_path == None:
-        df = pd.read_csv(os.path.join(current_iter_path(config), "probs.csv"))
-    else:
-        df = pd.read_csv(probs_path)
-    top_preds_df = pd.read_csv(os.path.join(experiment_path(config), "top_preds.csv"))
-    results = pd.read_csv(os.path.join(experiment_path(config), "results.csv"))
-    for image in df.Id.unique():
-        probs = (
-            df.loc[
-                df.Id == image, [str(i) for i in range(max(results["y"].unique()) + 1)]
-            ]
-            .values.flatten()
-            .tolist()
-        )
-        row = top_preds_df.loc[top_preds_df.Id == image]
-        probs = np.array(probs)
 
-        top_k = -1 * top_x
-        top = np.argsort(probs)[top_k:]
-        top = np.flip(top)
-
-        for j, i in enumerate(top):
-            top_preds_df.loc[top_preds_df.Id == image, f"{str(i)}_{j+1}"] += 1
-
-    top_preds_df.to_csv(
-        os.path.join(experiment_path(config), "top_preds.csv"), index=False
-    )
-    return top_preds_df
 
 
 def create_top_preds_df(config):
