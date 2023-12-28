@@ -76,7 +76,6 @@ def orsac_one_iter(config, i):
     
     print(f"Running iter_{i}")
     Model = config.get_model()
-    logger.log(f"Using model {config.model_name}")
     kwargs = config.model_kwargs
     model = Model(**kwargs)
     device = config.device
