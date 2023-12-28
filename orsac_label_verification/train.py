@@ -72,8 +72,16 @@ def train_(config, model):
     return learn.model
 
 
-def orsac_one_iter(config, model, i):
+def orsac_one_iter(config, i):
+    
     print(f"Running iter_{i}")
+    Model = config.get_model()
+    logger.log(f"Using model {config.model_name}")
+    kwargs = config.model_kwargs
+    model = Model(**kwargs)
+    device = config.device
+    model = model.to(device)
+    model.train()
     iter_data(config, i)
     train_(config, model)
     probs, preds, labels, acc = test(config)
@@ -86,12 +94,12 @@ def orsac_one_iter(config, model, i):
     save_current_iter(config, i)
 
 
-def orsac_all(config, model):
+def orsac_all(config):
     #Another place where time is wasted. Instead, in orsac init have a split column added. OR, just call this shuffle data function if there is not a split column.
 
     shuffle_data(config)
     for i in range(config.n_iterations):
-        orsac_one_iter(config, model, i)
+        orsac_one_iter(config, i)
 
 
 def init_orsac(config):
@@ -99,15 +107,13 @@ def init_orsac(config):
     init_data_df(config)
     init_metrics_df(config)
     create_results_df(config)
-    # consider removing to save memory. 
-    # create_top_preds_df(config)
     with open(os.path.join(experiment_path(config), "config.json"), "w") as outfile:
         json.dump(config.dict(exclude_none=True), outfile)
 
 
-def train_model(config, model):
+def train_model(config):
     init_orsac(config)
-    orsac_all(config, model)
+    orsac_all(config)
 
 
 def train(config: ExperimentationConfig):
@@ -122,14 +128,8 @@ def train(config: ExperimentationConfig):
     logger.log("Training Settings Dump: ")
     print(json.dumps(config.dict(exclude_none=True), indent=2))
 
-    Model = config.get_model()
-    logger.log(f"Using model {config.model_name}")
-    kwargs = config.model_kwargs
-    model = Model(**kwargs)
-    device = config.device
-    model = model.to(device)
-    model.train()
-    train_model(config, model)
+    
+    train_model(config)
 
 
 def train_eval(config: ExperimentationConfig):
