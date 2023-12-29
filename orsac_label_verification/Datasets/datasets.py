@@ -121,8 +121,8 @@ class MosDataset(Dataset):
             image = load_image(imagename)
             image = T.Compose(self.transforms)(image)
             image = np.array(image)
-            print(os.getcwd())
-            cv2.imwrite(f"image_{time.time()}.jpg",image)
+
+            # cv2.imwrite(f"image_{time.time()}.jpg",image)
             
         label = self.images_df["y"][idx]
 
