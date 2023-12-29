@@ -26,7 +26,7 @@ def load_image(impath, pil=False):
         image = cv2.imread(impath, cv2.IMREAD_COLOR)
     if image is None:
         raise ValueError("Image not found at {}".format(impath))
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image
 
 
