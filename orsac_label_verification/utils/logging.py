@@ -192,6 +192,7 @@ def log_results(config):
 
 
 
+
 def create_top_preds_df(config):
     top_preds_df = pd.read_csv(os.path.join(experiment_path(config), "results.csv"))
     classes = [i for i in top_preds_df.y.unique() if i != -1]
@@ -206,8 +207,9 @@ def create_top_preds_df(config):
 # Generates and saves confusion matrix of iteration iter's test results to experiment folder.
 def con_mat_iter(config, y_true, y_pred, iter):
     cm_norm = confusion_matrix(y_true, y_pred, normalize="true")
+    class_names=config.get_class_names()
     ConfusionMatrixDisplay(
-        confusion_matrix=cm_norm, display_labels=list(config.class_names)
+        confusion_matrix=cm_norm, display_labels=list(class_names)
     ).plot()
     plt.xticks(rotation=90)
     plt.gcf().set_size_inches(25, 18)

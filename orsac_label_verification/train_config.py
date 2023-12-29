@@ -11,7 +11,9 @@ from torch.utils.data import Dataset
 from orsac_label_verification.Datasets.datasets import MosDataset
 from orsac_label_verification.models.models import efficientnet_mod, xception_mod
 from orsac_label_verification.utils.losses import MosLoss
+from orsac_label_verification.utils.utils import get_classes
 
+from orsac_label_verification.utils.logging import get_data_csv
 
 # todo but not high priority
 class ExperimentationConfig(BaseModel):
@@ -76,6 +78,10 @@ class ExperimentationConfig(BaseModel):
     best_weights: Optional[str] = Field(
         default="acc",
         description="Which metric to use for the best weights. Options include acc,f1,and loss",
+    )
+    white_balance: Optional[bool] =Field(
+        default=False,
+        description='Whether to apply the white balance transform to images or not.'
     )
     mode: str = Field(
         default="clean",
@@ -175,6 +181,10 @@ class ExperimentationConfig(BaseModel):
 
     def get_loss(self) -> Callable:
         return self.losses[self.loss]
+    def get_class_names(self)->List:
+        d1,d2=get_classes(get_data_csv(self.data_csv_path))
+        print(d1,d2,'HERE',d1.values)
+        return d1.values()
 
     class Config:
         arbitrary_types_allowed = True

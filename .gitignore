@@ -3,6 +3,7 @@
 # Environments
 
 .env
+**.env
 data/*
 experiments/*
 *.pyc

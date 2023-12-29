@@ -1,5 +1,5 @@
 from __future__ import division, print_function
-
+import time
 import math
 import os
 import traceback
@@ -14,18 +14,9 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from orsac_label_verification.utils.logging import get_img_abspath
+from orsac_label_verification.Datasets.preprocessing import *
 
 
-def make_square(img):
-    if img.shape[0] > img.shape[1]:
-        img = np.rollaxis(img, 1, 0)
-    toppadlen = (img.shape[1] - img.shape[0]) // 2
-    bottompadlen = img.shape[1] - img.shape[0] - toppadlen
-    toppad = img[:5, :, :].mean(0, keepdims=True).astype(img.dtype)
-    toppad = np.repeat(toppad, toppadlen, 0)
-    bottompad = img[-5:, :, :].mean(0, keepdims=True).astype(img.dtype)
-    bottompad = np.repeat(bottompad, bottompadlen, 0)
-    return np.concatenate((toppad, img, bottompad), axis=0)
 
 
 def load_image(impath, pil=False):
@@ -98,7 +89,9 @@ class MosDataset(Dataset):
 
         counts = self.images_df["Split"].value_counts()
         print("Existing images:\n{}".format(counts))
-
+        self.transforms=[CV2Resize((self.config.imsize,self.config.imsize))]
+        if self.config.white_balance:
+            self.transforms.insert(0,WhiteBalance())
         if self.config.preload_data:
             print("Preloading images...")
             self.imarray = np.zeros(
@@ -107,12 +100,10 @@ class MosDataset(Dataset):
             )
             for idx, impath in enumerate(tqdm(self.images_df["Id"])):
                 img = load_image(impath)
-                img = make_square(img)
-                img = cv2.resize(
-                    img,
-                    (self.config.imsize, self.config.imsize),
-                    interpolation=cv2.INTER_AREA,
-                )
+                img = T.Compose(self.transforms)(image)
+                image = np.array(image)
+       
+                # cv2.imwrite(f"image_{time.time}.png",image)
                 self.imarray[idx, :, :, :] = img
 
     def __len__(self):
@@ -123,13 +114,16 @@ class MosDataset(Dataset):
 
     def __getitem__(self, idx):
         imagename = self.images_df.loc[idx, "Id"]
+       
         if self.config.preload_data:
             image = self.imarray[idx, :, :, :]
         else:
             image = load_image(imagename)
-            image = make_square(image)
-
-        image = cv2.resize(image, (self.config.imsize, self.config.imsize))
+            image = T.Compose(self.transforms)(image)
+            image = np.array(image)
+            print(os.getcwd())
+            cv2.imwrite(f"image_{time.time()}.jpg",image)
+            
         label = self.images_df["y"][idx]
 
         if self.transformer:
