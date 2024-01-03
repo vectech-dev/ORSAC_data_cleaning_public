@@ -81,9 +81,7 @@ def create_results_df(config):
     res_df = pd.read_csv(get_data_csv(config.data_csv_path))
     res_df["num_sampled"] = 0
     res_df["num_missed"] = 0
-    for y in range(max(res_df.y.unique()) + 1):
-        for j in range(config.top_x):
-            res_df[f"{str(y)}_{j+1}"] = 0
+   
     res_df.to_csv(orsac_res_path, index=False)
 
 
