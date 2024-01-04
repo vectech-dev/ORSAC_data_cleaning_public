@@ -46,6 +46,9 @@ class ExperimentationConfig(BaseModel):
     class_names: Optional[list] = Field(
         default={}, description="the names of the classes, gotten automatically"
     )
+    start_iteration :Optional[int]=Field(
+        default=0,description='the iteration number to start from'
+    )
     n_iterations: Optional[int] = Field(
         default=35, description="the number of iterations to run ORSAC for"
     )

@@ -99,7 +99,7 @@ def orsac_all(config):
     #Another place where time is wasted. Instead, in orsac init have a split column added. OR, just call this shuffle data function if there is not a split column.
 
     shuffle_data(config)
-    for i in range(config.n_iterations):
+    for i in range(config.start_iteration,config.n_iterations):
         orsac_one_iter(config, i)
 
 
