@@ -13,16 +13,18 @@ from orsac_label_verification.train_config import (  # , PathsConfig
 class Executor:
     def __init__(self, args):
         if args.config is not None:
-            with open(args.config) as json_file:
-                self.config = json.load(json_file)
+            self.config = []
+            for i, config in enumerate(args.config):
+                with open(config) as json_file:
+                    self.config.append(json.load(json_file))
 
-            if "mode" in args and (
-                "mode" not in self.config or self.config["mode"] != args.mode
-            ):
-                self.config["mode"] = args.mode
+                if "mode" in args and (
+                    "mode" not in self.config[i] or self.config[i]["mode"] != args.mode
+                ):
+                    self.config[i]["mode"] = args.mode
 
-            if args.batch_size:
-                self.config["batch_size"] = args.batch_size
+                if args.batch_size:
+                    self.config[i]["batch_size"] = args.batch_size
         else:
             self.config = None
         self.args = args
@@ -36,13 +38,15 @@ class TrainingExecutor(Executor):
     def __init__(self, args):
         super(TrainingExecutor, self).__init__(args)
         assert self.config is not None, "need configuration file for training provided"
-        self.config[
-            "mode"
-        ] = args.mode  # Add this line to update the mode value in the configuration
+        for i in range(len(self.config)):
+            self.config[i][
+                "mode"
+            ] = args.mode  # Add this line to update the mode value in the configuration
 
     def execute(self):
-        train_settings = ExperimentationConfig.parse_obj(self.config)
-        train(train_settings)
+        for config in self.config:
+            train_settings = ExperimentationConfig.parse_obj(config)
+            train(train_settings)
 
 
 class TestingExecutor(Executor):
@@ -51,7 +55,8 @@ class TestingExecutor(Executor):
         assert self.config is None, "No configuration needed for testing"
 
     def execute(self):
-        orsac_test(self.args.exp_dir)
+        for exp in self.args.exp_dir:
+            orsac_test(self.args.exp_dir)
 
 
 class EvaluationExecutor(Executor):
@@ -87,11 +92,11 @@ def run(args=None):
     )
 
     parser.add_argument(
-        "--config", type=str, help="The configuration file for training"
+        "--config", type=str, help="The configuration file for training",action='append'
     )
 
     parser.add_argument(
-        "--exp-dir", type=str, help="The experiment directory for tests"
+        "--exp-dir", type=str, help="The experiment directory for tests",action='append'
     )
 
     parser.add_argument(

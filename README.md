@@ -17,6 +17,9 @@ $ pip install -e .
 
 ```sh
 $ python -m orsac_label_verification --config configs/config.json
+python -m orsac_label_verification --config configs/cifar10a.json
+python -m orsac_label_verification --config configs/cifar10b.json
+python -m orsac_label_verification --config configs/cifar10c.json
 ```
 
 ### Test

@@ -148,9 +148,13 @@ class ExperimentationConfig(BaseModel):
         default=None,
         description="Where to load the model weights from while testing",
     )
+    device_ids: Optional[list]=Field(
+        default=[0,1,2,3,4,5,6,7],
+        description='gpu id'
+    )
 
     num_workers: Optional[int] = Field(
-        default=os.cpu_count(),
+        default=75,
         description="The number of workers to use in dataloaders",
     )
 

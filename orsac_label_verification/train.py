@@ -11,7 +11,7 @@ from fastai.callback.tracker import EarlyStoppingCallback
 from fastai.data.core import DataLoaders
 from fastai.learner import Learner
 from fastai.optimizer import ranger
-
+import torch
 from orsac_label_verification.Datasets.loaders import get_fastai_dataloaders
 from orsac_label_verification.test import test
 from orsac_label_verification.train_config import ExperimentationConfig
@@ -80,6 +80,8 @@ def orsac_one_iter(config, i):
     model = Model(**kwargs)
     device = config.device
     model = model.to(device)
+    if config.device_ids is not None:
+        model = torch.nn.DataParallel(model, device_ids=config.device_ids)
     model.train()
     iter_data(config, i)
     train_(config, model)
@@ -137,5 +139,7 @@ def train_eval(config: ExperimentationConfig):
     model = Model(**kwargs)
     device = config.device
     model = model.to(device)
+    if config.device_ids is not None:
+        model = torch.nn.DataParallel(model, device_ids=config.device_ids)
     model.train()
     train_(config, model)
