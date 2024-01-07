@@ -56,7 +56,7 @@ class TestingExecutor(Executor):
 
     def execute(self):
         for exp in self.args.exp_dir:
-            orsac_test(self.args.exp_dir)
+            orsac_test(exp)
 
 
 class EvaluationExecutor(Executor):
@@ -65,7 +65,8 @@ class EvaluationExecutor(Executor):
         assert self.config is None, "No configuration needed for evaluation"
 
     def execute(self):
-        orsac_evaluate(self.args.exp_dir)
+        for exp in self.args.exp_dir:
+            orsac_evaluate(exp)
 
 
 EXECUTORS = {
